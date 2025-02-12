@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>werarew sheet</title>
+    <style>
+        /* Genel stil */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2em;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .toggle-btn {
+            background-color: #333;
+        }
+
+        .toggle-btn:hover {
+            background-color: #555;
+        }
+
+        .file-input {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        td input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        td input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* Koyu mod stilleri */
+        body.dark-mode {
+            background-color: #2c2c2c;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .container {
+            background-color: #333;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode h2 {
+            color: #76c7b7;
+        }
+
+        body.dark-mode table {
+            border-color: #444;
+        }
+
+        body.dark-mode th {
+            background-color: #444;
+            color: #fff;
+        }
+
+        body.dark-mode td {
+            background-color: #555;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode td input {
+            background-color: #666;
+            color: #fff;
+            border: 1px solid #888;
+        }
+
+        body.dark-mode td input:focus {
+            border-color: #76c7b7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>werarew sheet</h2>
+
+    <div class="controls">
+        <button onclick="addRow()">Satır Ekle</button>
+        <button onclick="addColumn()">Sütun Ekle</button>
+        <button onclick="downloadTable()">Tabloyu İndir</button>
+        <button class="toggle-btn" onclick="toggleDarkMode()">Koyu/Aydınlık Mod</button>
+        <input type="file" id="fileInput" class="file-input" onchange="importTable(event)" />
+    </div>
+
+    <table id="excelTable">
+        <thead>
+            <tr>
+                <th><input type="text" placeholder="A1" /></th>
+                <th><input type="text" placeholder="B1" /></th>
+                <th><input type="text" placeholder="C1" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+                <td><input type="text" /></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Satır ekleme fonksiyonu
+    function addRow() {
+        const table = document.getElementById('excelTable').getElementsByTagName('tbody')[0];
+        const row = table.insertRow();
+        const colCount = table.rows[0].cells.length;
+
+        for (let i = 0; i < colCount; i++) {
+            const cell = row.insertCell();
+            const input = document.createElement('input');
+            cell.appendChild(input);
+        }
+    }
+
+    // Sütun ekleme fonksiyonu
+    function addColumn() {
+        const table = document.getElementById('excelTable');
+        const rows = table.rows;
+
+        // Başlık ekleme
+        const headerCell = document.createElement('th');
+        const headerInput = document.createElement('input');
+        headerCell.appendChild(headerInput);
+        rows[0].appendChild(headerCell);
+
+        // Tablodaki her satıra yeni bir hücre ekleme
+        for (let i = 1; i < rows.length; i++) {
+            const cell = rows[i].insertCell();
+            const input = document.createElement('input');
+            cell.appendChild(input);
+        }
+    }
+
+    // Tabloyu indirip kaydetme fonksiyonu
+    function downloadTable() {
+        const table = document.getElementById('excelTable');
+        let txtContent = '';
+
+        // Kullanıcıdan dosya ismi al
+        const fileName = prompt('Tabloyu hangi isimle kaydetmek istersiniz?', 'tablo.txt');
+        if (!fileName) return;
+
+        // Başlıkları ekle
+        const headers = table.rows[0].cells;
+        for (let i = 0; i < headers.length; i++) {
+            txtContent += headers[i].querySelector('input').value || '';
+            if (i < headers.length - 1) txtContent += '\t';
+        }
+        txtContent += '\n';
+
+        // Veri satırlarını ekle
+        for (let i = 1; i < table.rows.length; i++) {
+            const cells = table.rows[i].cells;
+            for (let j = 0; j < cells.length; j++) {
+                txtContent += cells[j].querySelector('input').value || ''; // Input değerini alıyoruz
+                if (j < cells.length - 1) txtContent += '\t';
+            }
+            txtContent += '\n';
+        }
+
+        // TXT dosyasını indir
+        const hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txtContent);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = fileName + '.wext';
+        hiddenElement.click();
+    }
+
+    // Tabloyu yüklemek için dosya aktarma fonksiyonu
+    function importTable(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const content = e.target.result;
+            const rows = content.split('\n');
+            const table = document.getElementById('excelTable');
+            const tbody = table.getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+
+            // Her satır için yeni bir satır oluşturuyoruz
+            rows.forEach((row, rowIndex) => {
+                const newRow = tbody.insertRow();
+                const cells = row.split('\t');
+
+                cells.forEach((cellContent, cellIndex) => {
+                    const newCell = newRow.insertCell(cellIndex);
+                    const input = document.createElement('input');
+                    input.value = cellContent;
+                    newCell.appendChild(input);
+                });
+            });
+        };
+        reader.readAsText(file);
+    }
+
+    // Koyu/Aydınlık mod geçişi
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
+</script>
+
+</body>
+</html>
